@@ -14,3 +14,13 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .idea*
+
+# Eclipse
+.cache
+.classpath
+.project
+.settings
+.DS_Store
+.worksheet
+
+
