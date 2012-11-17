@@ -38,13 +38,13 @@ private[persist] object JsonParse {
 
     private object CharKinds extends Enumeration {
       type CharKind = Value
-      val Letter, Digit, Minus, Quote, Colon, Comma, Lbra, Rbra, Larr, Rarr, Blank, Other, Eof = Value
+      val Letter, Digit, Minus, Quote, Colon, Comma, Lbra, Rbra, Larr, Rarr, Blank, Other, Eof, Slash = Value
     }
     import CharKinds._
 
     object TokenKinds extends Enumeration {
       type TokenKind = Value
-      val ID, STRING, NUMBER, BIGNUMBER, COLON, COMMA, LOBJ, ROBJ, LARR, RARR, BLANK, EOF = Value
+      val ID, STRING, NUMBER, BIGNUMBER, FLOATNUMBER, COLON, COMMA, LOBJ, ROBJ, LARR, RARR, BLANK, EOF = Value
     }
     import TokenKinds._
 
@@ -73,6 +73,7 @@ private[persist] object JsonParse {
     charKind('\t'.toInt) = Blank
     charKind('\n'.toInt) = Blank
     charKind('\r'.toInt) = Blank
+    charKind('/'.toInt) = Slash
 
     private val charAction = new Array[(Chars) => (TokenKind, String)](CharKinds.values.size)
     charAction(Letter.id) = handleLetter
@@ -88,6 +89,7 @@ private[persist] object JsonParse {
     charAction(Blank.id) = handleBlank
     charAction(Other.id) = handleUnexpected
     charAction(Eof.id) = handleSimple(EOF)
+    charAction(Slash.id) = handleSlash
 
     private def escapeMap = HashMap[Int, String](
       '\\'.toInt -> "\\",
@@ -98,6 +100,31 @@ private[persist] object JsonParse {
       'n'.toInt -> "\n",
       'r'.toInt -> "\r",
       't'.toInt -> "\t")
+
+    private def handleRaw(chars: Chars) = {
+      chars.next
+      var first = chars.mark
+      var state = 0
+      do {
+        if (chars.kind == Eof) chars.error("EOF encountered in raw string")
+        state = if (chars.ch == '}') {
+          1
+        } else if (chars.ch == '"') {
+          if (state == 1) {
+            2
+          } else if (state == 2) {
+            3
+          } else {
+            0
+          }
+        } else {
+          0
+        }
+        chars.next
+      } while (state != 3)
+      val s = chars.substr(first, 3)
+      (STRING, s)
+    }
 
     private def handleQuote(chars: Chars) = {
       var sb: StringBuilder = null
@@ -140,12 +167,16 @@ private[persist] object JsonParse {
       }
       val result = (STRING, s2)
       chars.next
-      result
+      if (s2.length() == 0 && chars.ch == '{') {
+        handleRaw(chars)
+      } else {
+        result
+      }
     }
 
     private def handleLetter(chars: Chars) = {
       val first = chars.mark
-      while (chars.kind == Letter) {
+      while (chars.kind == Letter || chars.kind == Digit) {
         chars.next
       }
       val s = chars.substr(first)
@@ -175,7 +206,8 @@ private[persist] object JsonParse {
         } else if (chars.ch == '-'.toInt) {
           chars.next
         }
-        BIGNUMBER
+        getDigits(chars)
+        FLOATNUMBER
       } else {
         k1
       }
@@ -197,6 +229,15 @@ private[persist] object JsonParse {
       do {
         chars.next
       } while (chars.kind == Blank)
+      (BLANK, "")
+    }
+
+    private def handleSlash(chars: Chars) = {
+      val first = chars.mark
+      if (chars.kind != Slash) chars.error("Expecting Slash")
+      do {
+        chars.next
+      } while (chars.ch != '\n' && chars.kind != Eof)
       (BLANK, "")
     }
 
@@ -236,8 +277,8 @@ private[persist] object JsonParse {
         throw new JsonParseException(msg, s, linePos, charPos)
       }
       def mark = pos - 1
-      def substr(first: Int) = {
-        s.substring(first, pos - 1)
+      def substr(first: Int, delta: Int = 0) = {
+        s.substring(first, pos - 1 - delta)
       }
       next
     }
@@ -272,6 +313,7 @@ private[persist] object JsonParse {
   tokenAction(STRING.id) = handleString
   tokenAction(NUMBER.id) = handleNumber
   tokenAction(BIGNUMBER.id) = handleBigNumber
+  tokenAction(FLOATNUMBER.id) = handleFloatNumber
   tokenAction(COLON.id) = handleUnexpected
   tokenAction(COMMA.id) = handleUnexpected
   tokenAction(LOBJ.id) = handleObject
@@ -321,6 +363,16 @@ private[persist] object JsonParse {
     v
   }
 
+  private def handleFloatNumber(tokens: Tokens) = {
+    val v = try {
+      tokens.value.toDouble
+    } catch {
+      case _ => tokens.error("Bad double")
+    }
+    tokens.next
+    v
+  }
+
   private def handleArray(tokens: Tokens) = {
     tokens.next
     var result = List[Json]()
@@ -342,7 +394,7 @@ private[persist] object JsonParse {
     tokens.next
     var result = new HashMap[String, Json]()
     while (tokens.kind != ROBJ) {
-      if (tokens.kind != STRING) tokens.error("Expecting string")
+      if (tokens.kind != STRING && tokens.kind != ID) tokens.error("Expecting string or name")
       val name = tokens.value
       tokens.next
       if (tokens.kind != COLON) tokens.error("Expecting :")
@@ -416,6 +468,7 @@ private[persist] object JsonUnparse {
         case s: String => sb.append(quote(s))
         case null => sb.append("null")
         case x: Boolean => sb.append(x.toString)
+        case x: Double => sb.append("%1$E".format(x))
         case x: Number => sb.append(x.toString)
         case list: Seq[_] => {
           if (list.headOption == None) {
@@ -447,7 +500,7 @@ private[persist] object JsonUnparse {
             sb.append("}")
           }
         }
-        case x => throw new SystemException(Codes.JsonUnparse, JsonObject("msg" -> "bad json value", "value" -> x.toString()))
+        case x => throw new SystemException("JsonUnparse", JsonObject("msg" -> "bad json value", "value" -> x.toString()))
       }
     }
     compact1(obj)
@@ -503,6 +556,7 @@ private[persist] object JsonUnparse {
     obj match {
       case null => doIndent("null", indent)
       case x: Boolean => doIndent(x.toString, indent)
+      case x: Double => doIndent("%1$E".format(x), indent)
       case x: Number => doIndent(x.toString, indent)
       case array: Array[Json] => pretty(array.toList, indent)
       case list: Seq[_] =>
@@ -514,15 +568,17 @@ private[persist] object JsonUnparse {
         }
       case map: scala.collection.Map[_, _] =>
         val seq2 = Sorting.stableSort[(Any, Json), String](map.iterator.toList, { case (k, v) => k.toString })
-        val strings = seq2.map { case (k, v) => {
-          val v1 = pretty(v)
-          val label = quote(k.toString) + ":"
-          if (isMultiLine(v1) || label.size + v1.size > WIDTH) {
-            label + "\n" + doIndent(v1,2)
-          } else {
-            label + v1
+        val strings = seq2.map {
+          case (k, v) => {
+            val v1 = pretty(v)
+            val label = quote(k.toString) + ":"
+            if (isMultiLine(v1) || label.size + v1.size > WIDTH) {
+              label + "\n" + doIndent(v1, 2)
+            } else {
+              label + v1
+            }
           }
-        }}
+        }
         if (!split(strings)) {
           doIndent("{" + strings.mkString(",") + "}", indent)
         } else {
@@ -530,7 +586,7 @@ private[persist] object JsonUnparse {
         }
       case s: String => doIndent(quote(s), indent)
       case x => {
-        throw new SystemException(Codes.JsonUnparse, JsonObject("msg" -> "bad json value", "value" -> x.toString()))
+        throw new SystemException("JsonUnparse", JsonObject("msg" -> "bad json value", "value" -> x.toString()))
       }
     }
   }
