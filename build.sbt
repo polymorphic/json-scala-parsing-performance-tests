@@ -37,9 +37,9 @@ scalacOptions ++= Seq("-deprecation", "-unchecked")
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation")
 
 /* entry point */
-mainClass in (Compile, packageBin) := Some("com.micro-workflow.json-scala-perftest.Main")
+mainClass in (Compile, packageBin) := Some("com.microWorkflow.jsonScalaPerftest.Main")
 
-mainClass in (Compile, run) := Some("com.micro-workflow.json-scala-perftest.Main")
+mainClass in (Compile, run) := Some("com.microWorkflow.jsonScalaPerftest.Main")
 
 /* dependencies */
 libraryDependencies ++= Seq (
@@ -94,7 +94,7 @@ pomExtra := (
 // httpcom://www.scala-sbt.org/using_sonatype.html
 
 /* assembly plugin */
-mainClass in AssemblyKeys.assembly := Some("com.micro-workflow.json-scala-perftest.Main")
+mainClass in AssemblyKeys.assembly := Some("com.micro-workflow.jsonScalaPerftest.Main")
 
 assemblySettings
 
