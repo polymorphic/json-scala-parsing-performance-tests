@@ -1,7 +1,8 @@
 package com.microWorkflow.jsonScalaPerftest
 
-import java.io.{FileFilter, File}
+import java.io.File
 import io.Source
+import collection.JavaConversions._
 
 object Main extends App {
 
@@ -10,16 +11,17 @@ object Main extends App {
      new File(dir).listFiles.filter(file => p(file))
   }
 
-  def deserializeFrom(fileName: String) {
+  def deserializeFrom(fileName: String) = {
     val contents = Source.fromFile(fileName).mkString
-    println("Read " + contents)
+    val jerkson = new JerksonAdapter
+    jerkson.measure(contents, iterations = 1000)
   }
 
   val dataFolders = getFilesMatching("data", f => f.isDirectory)
   for (d <- dataFolders) {
     println("Testing files in " + d.getAbsolutePath)
     val files = getFilesMatching(d.getAbsolutePath, f => f.isFile)
-    for (f <- files)
-      deserializeFrom(f.getAbsolutePath)
+    val measurements = files.map(f => deserializeFrom(f.getCanonicalPath) )
+    println(measurements)
   }
 }
