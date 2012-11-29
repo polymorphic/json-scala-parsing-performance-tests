@@ -1,8 +1,9 @@
-package com.microWorkflow.jsonScalaPerftest
+package com.microWorkflow.jsonScalaPerftest.jerkson
 
 import com.codahale.jerkson.JsonSnakeCase
 import org.codehaus.jackson.map.ObjectMapper
 import com.codahale.jerkson.Json._
+import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,34 +19,22 @@ case class User ( utc_offset: Int
                   )
 
 @JsonSnakeCase
-case class Url ( indices: Array[Int]
-                 , url: String
-                 )
+case class Url(indices: Array[Int], url: String)
 
 @JsonSnakeCase
-case class Hashtag ( indices: Array[Int]
-                     , text: String
-                     )
+case class Hashtag(indices: Array[Int], text: String)
 
 @JsonSnakeCase
-case class UserMention ( indices: Array[Int]
-                         , name: String
-                         )
+case class UserMention(indices: Array[Int], name: String)
 
 @JsonSnakeCase
-case class Entities ( hashtags: Array[Hashtag]
-                      , urls: Array[Url]
-                      , userMentions: Array[UserMention]
-                      )
+case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Array[UserMention])
 
 @JsonSnakeCase
-case class Tweet( idStr: String
-                  , text: String
-                  , entities: Entities
-                  )
+case class Tweet(idStr: String, text: String, entities: Entities)
 
-class JerksonAdapter extends TimeMeasurements {
 
+class Adapter extends TimeMeasurements {
 
   def measure(json: String, iterations: Int) = {
     val startUserTime = getUserTime

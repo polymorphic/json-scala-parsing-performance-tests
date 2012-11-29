@@ -1,6 +1,7 @@
-package com.microWorkflow.jsonScalaPerftest
+package com.microWorkflow.jsonScalaPerftest.liftjson
 
 import net.liftweb.json._
+import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
 
 /**
  * Created with IntelliJ IDEA.
@@ -89,11 +90,16 @@ import net.liftweb.json._
 
  */
 
+case class Url(indices: Array[Int], url: String)
+case class Hashtag(indices: Array[Int], text: String)
+case class UserMention(indices: Array[Int], name: String)
+case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Array[UserMention])
+case class Tweet(idStr: String, text: String, entities: Entities)
 
-
-class LiftJsonAdapter {
+class LiftJsonAdapter extends TimeMeasurements {
 
   def measure(json: String, iterations: Int) = {
+    val startUserTime = getUserTime
     implicit val formats = DefaultFormats
 
     val tweets = parse(json) match {
@@ -101,7 +107,8 @@ class LiftJsonAdapter {
       case array: JArray => array.extract[List[Tweet]]
       case _ => List[Tweet]()
     }
+    val userTime = getUserTime - startUserTime
+    userTime
   }
-
 
 }

@@ -13,15 +13,17 @@ object Main extends App {
 
   def deserializeFrom(fileName: String) = {
     val contents = Source.fromFile(fileName).mkString
-    val jerkson = new JerksonAdapter
-    jerkson.measure(contents, iterations = 1000)
+    val adapter = new liftjson.Adapter
+    adapter.measure(contents, iterations = 1000)
   }
 
   val dataFolders = getFilesMatching("data", f => f.isDirectory)
   for (d <- dataFolders) {
     println("Testing files in " + d.getAbsolutePath)
     val files = getFilesMatching(d.getAbsolutePath, f => f.isFile)
-    val measurements = files.map(f => deserializeFrom(f.getCanonicalPath) )
-    println(measurements)
+    val measurements = files.map(f => deserializeFrom(f.getCanonicalPath))
+    for (measurement <- measurements) {
+      println(measurement)
+    }
   }
 }
