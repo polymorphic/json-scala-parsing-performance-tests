@@ -1,6 +1,8 @@
-package com.microWorkflow.jsonScalaPerftest.liftjson
+package com.microWorkflow.jsonScalaPerftest.persist
 
-import net.liftweb.json._
+import com.persist.JsonOps._
+import com.persist.JsonMapper._
+
 import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
 
 /**
@@ -89,22 +91,21 @@ import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
 }
 
  */
-
-case class Url(indices: Array[Int], url: String)
-case class Hashtag(indices: Array[Int], text: String)
-case class UserMention(indices: Array[Int], name: String)
-case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Array[UserMention])
+case class Url(indices: Seq[Int], url: String)
+case class Hashtag(indices: Seq[Int], text: String)
+case class UserMention(indices: Seq[Int], name: String)
+case class Entities(hashtags: Seq[Hashtag], urls: Seq[Url], user_mentions: Seq[UserMention])
 case class Tweet(id_str: String, text: String, entities: Entities)
 
-class LiftJsonAdapter extends TimeMeasurements {
+class PersistAdapter extends TimeMeasurements {
 
   def measure(json: String, iterations: Int) = {
     val startUserTime = getUserTime
-    implicit val formats = DefaultFormats
+    //implicit val formats = DefaultFormats
 
-    val tweets = parse(json) match {
-      case obj: JObject => List(obj.extract[Tweet])
-      case array: JArray => array.extract[List[Tweet]]
+    val tweets = Json(json) match {
+      case obj: JsonObject => ToObject[Tweet](obj)
+      case array: JsonArray => //array.extract[List[Tweet]]
       case _ => List[Tweet]()
     }
     val userTime = getUserTime - startUserTime

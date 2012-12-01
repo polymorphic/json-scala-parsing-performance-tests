@@ -13,7 +13,7 @@ object Main extends App {
 
   def deserializeFrom(fileName: String) = {
     val contents = Source.fromFile(fileName).mkString
-    val adapter = new liftjson.Adapter
+    val adapter = new liftjson.LiftJsonAdapter
     adapter.measure(contents, iterations = 1000)
   }
 

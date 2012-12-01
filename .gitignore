@@ -22,5 +22,4 @@ project/plugins/project/
 .settings
 .DS_Store
 .worksheet
-
-
+*.sc
