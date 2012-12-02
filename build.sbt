@@ -46,6 +46,7 @@ libraryDependencies ++= Seq (
     "com.codahale" % "jerkson_2.9.1" % "0.5.0",
     "net.liftweb" % "lift-json_2.9.1" % "2.4",
     "net.minidev" % "json-smart" % "1.1.1",
+    "com.rojoma" %% "rojoma-json" % "2.0.0",
     "io.spray" %% "spray-json" % "1.2.3" cross CrossVersion.full
   // "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
   // "org.scalaz" %% "scalaz-effect" % "7.0.0-M3",
