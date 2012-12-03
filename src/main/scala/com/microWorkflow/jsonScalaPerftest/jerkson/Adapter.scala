@@ -3,7 +3,7 @@ package com.microWorkflow.jsonScalaPerftest.jerkson
 import com.codahale.jerkson.JsonSnakeCase
 import org.codehaus.jackson.map.ObjectMapper
 import com.codahale.jerkson.Json._
-import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,13 +34,15 @@ case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Ar
 case class Tweet(idStr: String, text: String, entities: Entities)
 
 
-class Adapter extends TimeMeasurements {
+class Adapter extends LibraryAdapter {
+ var mapper: ObjectMapper = _
 
-  def measure(json: String, iterations: Int) = {
-    val startUserTime = getUserTime
-    val objectMapper = new ObjectMapper()
-    for (iteration <- 1 to iterations) {
-      val tweet = try {
+  override def initialize() {
+    mapper = new ObjectMapper()
+  }
+
+  def runOnce(json: String) = {
+      try {
         parse[Tweet](json)
       } catch {
         case pe: com.codahale.jerkson.ParsingException =>
@@ -48,9 +50,6 @@ class Adapter extends TimeMeasurements {
         case iae: java.lang.IllegalArgumentException =>
           null
       }
-    }
-    val userTime = getUserTime - startUserTime
-    userTime
   }
 
 }
