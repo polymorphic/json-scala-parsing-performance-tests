@@ -1,7 +1,16 @@
-package com.microWorkflow.jsonScalaPerftest.jsonsmart
+package com.microWorkflow.jsonScalaPerftest.liftjson
 
-import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
-import net.minidev.json.JSONValue.parse
+import net.liftweb.json._
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: dam
+ * Date: 11/24/12
+ * Time: 9:56 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
 /*
 {
     "contributors": null,
@@ -81,22 +90,22 @@ import net.minidev.json.JSONValue.parse
 
  */
 
-class JsonSmartAdapter extends TimeMeasurements {
+case class Url(indices: Array[Int], url: String)
+case class Hashtag(indices: Array[Int], text: String)
+case class UserMention(indices: Array[Int], name: String)
+case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Array[UserMention])
+case class Tweet(id_str: String, text: String, entities: Entities)
 
-  def measure(json: String, iterations: Int) = {
-    val startUserTime = getUserTime
-    //implicit val formats = DefaultFormats
+class LiftJsonAdapter extends LibraryAdapter {
 
-    val tweets = parse(json)
-    /*
-    val tweets = Json(json) match {
-      case obj: JsonObject => ToObject[Tweet](obj)
-      case array: JsonArray => //array.extract[List[Tweet]]
+  override def initialize() { /* nop */ }
+
+  override def runOnce(json: String) {
+    implicit val formats = DefaultFormats
+    parse(json) match {
+      case obj: JObject => List(obj.extract[Tweet])
+      case array: JArray => array.extract[List[Tweet]]
       case _ => List[Tweet]()
     }
-    */
-    val userTime = getUserTime - startUserTime
-    userTime
   }
-
 }

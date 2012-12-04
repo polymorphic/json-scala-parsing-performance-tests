@@ -34,14 +34,14 @@ case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Ar
 case class Tweet(idStr: String, text: String, entities: Entities)
 
 
-class Adapter extends LibraryAdapter {
+class JerksonAdapter extends LibraryAdapter {
  var mapper: ObjectMapper = _
 
   override def initialize() {
     mapper = new ObjectMapper()
   }
 
-  def runOnce(json: String) = {
+  override def runOnce(json: String) = {
       try {
         parse[Tweet](json)
       } catch {

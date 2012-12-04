@@ -16,9 +16,13 @@ abstract class LibraryAdapter extends TimeMeasurements {
   def measure(json: String, iterations: Int) = {
     val startUserTime = getUserTime
     initialize()
-    for (iteration <- 1 to iterations)
-      runOnce(json)
-    val userTime = getUserTime - startUserTime
-    userTime
+    try {
+      for (iteration <- 1 to iterations)
+        runOnce(json)
+      val endUserTime = getUserTime
+      Measurement(iterations).setUserTime(startUserTime, endUserTime)
+    } catch {
+      case e: Exception => Measurement(iterations).setUserTime(startUserTime, startUserTime)
+    }
   }
 }

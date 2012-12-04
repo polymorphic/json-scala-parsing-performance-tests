@@ -13,17 +13,17 @@ trait TimeMeasurements {
 
   def getCpuTime: Long = {
     val bean = ManagementFactory.getThreadMXBean( )
-    if (bean.isCurrentThreadCpuTimeSupported) bean.getCurrentThreadCpuTime else 0
+    if (bean.isCurrentThreadCpuTimeSupported) bean.getCurrentThreadCpuTime else 0  // ns
   }
 
   def getUserTime: Long = {
     val bean = ManagementFactory.getThreadMXBean
-    if (bean.isCurrentThreadCpuTimeSupported) bean.getCurrentThreadUserTime else 0
+    if (bean.isCurrentThreadCpuTimeSupported) bean.getCurrentThreadUserTime else 0 // ns
   }
 
   def getSystemTime: Long = {
     val bean = ManagementFactory.getThreadMXBean
-    if (bean.isCurrentThreadCpuTimeSupported) (bean.getCurrentThreadCpuTime - bean.getCurrentThreadUserTime) else 0L
+    if (bean.isCurrentThreadCpuTimeSupported) (bean.getCurrentThreadCpuTime - bean.getCurrentThreadUserTime) else 0 // ns
   }
 
 }
