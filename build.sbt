@@ -43,6 +43,7 @@ mainClass in (Compile, run) := Some("com.microWorkflow.jsonScalaPerftest.Main")
 
 /* dependencies */
 libraryDependencies ++= Seq (
+    "com.persist" % "persist-json_2.9.2" % "0.9-RC1",
     "com.codahale" % "jerkson_2.9.1" % "0.5.0",
     "net.liftweb" % "lift-json_2.9.1" % "2.4",
     "net.minidev" % "json-smart" % "1.1.1",
@@ -55,7 +56,8 @@ libraryDependencies ++= Seq (
 
 /* you may need these repos */
 resolvers ++= Seq(
-  "spray" at "http://repo.spray.io"
+  "spray" at "http://repo.spray.io",
+  "coda" at "http://repo.codahale.com"
   // Resolvers.sonatypeRepo("snapshots")
   // Resolvers.typesafeIvyRepo("snapshots")
   // Resolvers.typesafeIvyRepo("releases")
