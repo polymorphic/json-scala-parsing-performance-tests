@@ -9,32 +9,30 @@ package com.microWorkflow.jsonScalaPerftest
  */
 case class Measurement(iterations: Int) {
   var label: String = _
-  var uTime: Long = _
+  var initializationUserTime: Long = _
+  var iterationUserTime: Long = _
+
+  var hasErrors = false
 
   def setLabel(s: String) = {
     label = s
     this
   }
 
-  def setUserTime(t0: Long, t1: Long) = {
-    uTime = t1 - t0
+  def setInitializationTime(startTime: Long, endTime: Long) = {
+    require(endTime >= startTime)
+    initializationUserTime = endTime - startTime
+    this
+  }
+
+  def setIterationTime(startTime: Long, endTime: Long) = {
+    require(endTime >= startTime)
+    iterationUserTime = endTime - startTime
     this
   }
 
   def measurementLabel = label
-  def userTime = uTime
+  def initializationTime = initializationUserTime
+  def iterationTime = iterationUserTime
 
-  override def toString = {
-    val sb = new StringBuilder
-    sb.append("====\n")
-    sb.append(measurementLabel)
-    sb.append("\nIterations:\t")
-    sb.append(iterations)
-    sb.append("\nTotal user time:\t")
-    sb.append(userTime)
-    sb.append(" ns\nUser time/operation:\t")
-    sb.append("%f".format(userTime * 1.0 / iterations))
-    sb.append(" ns")
-    sb.toString()
-  }
 }
