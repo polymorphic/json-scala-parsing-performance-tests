@@ -101,9 +101,9 @@ class PersistAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String) = {
+  override def runOnce(json: String, doMap:Boolean) = {
     Json(json) match {
-      case obj: JsonObject => ToObject[Tweet](obj)
+      case obj: JsonObject => if (doMap) ToObject[Tweet](obj)
       case array: JsonArray => //array.extract[List[Tweet]]
       case _ => List[Tweet]()
     }

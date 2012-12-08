@@ -100,7 +100,7 @@ class LiftJsonAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String) {
+  override def runOnce(json: String, doMap:Boolean) {
     implicit val formats = DefaultFormats
     parse(json) match {
       case obj: JObject => List(obj.extract[Tweet])

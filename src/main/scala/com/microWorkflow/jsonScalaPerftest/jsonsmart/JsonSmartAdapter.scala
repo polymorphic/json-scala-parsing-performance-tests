@@ -7,7 +7,7 @@ class JsonSmartAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String) = {
+  override def runOnce(json: String, doMap:Boolean) = {
     parse(json)
   }
 

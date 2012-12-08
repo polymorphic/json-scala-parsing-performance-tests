@@ -38,9 +38,10 @@ case class Category(directoryName: String, name: String) {
     sb.toString()
   }
 
-  def measure(adapter: LibraryAdapter) {
-    for (dataset <- datasets)
-      adapter.measure(dataset)
+  def measure(adapter: LibraryAdapter,doMap:Boolean) {
+    for (dataset <- datasets) {
+      adapter.measure(dataset, doMap)
+    }
   }
 }
 
@@ -59,15 +60,19 @@ object Main extends App {
                       , new jsonsmart.JsonSmartAdapter("JsonSmart")
                       , new spray.SprayAdapter("spray")
                       , new persist.PersistAdapter("persist")
+                      , new twitter.TwitterAdapter("twitter")
+                      , new socrata.SocrataAdapter("socrata")
+                      , new scalalib.ScalaLibAdapter("scalalib")
+                      , new jackson.JacksonAdapter("jackson")
                       )
 
   val categories = Category.getFilesMatching("data", f => f.isDirectory).map(d => new Category(d.getCanonicalPath))
 
   ConsoleReporter.enable(3, TimeUnit.SECONDS)
-  for (count <- 1 to 1000) {
+  //for (count <- 1 to 1000) {
     for (category <- categories) {
-      adapters.foreach( each => category.measure(each))
+      adapters.foreach( each => category.measure(each,false))
     }
-  }
+  //}
   println("Done")
 }

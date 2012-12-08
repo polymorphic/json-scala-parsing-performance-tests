@@ -41,7 +41,7 @@ class JerksonAdapter(name: String) extends LibraryAdapter(name) {
     mapper = new ObjectMapper()
   }
 
-  override def runOnce(json: String) = {
+  override def runOnce(json: String, doMap:Boolean) = {
       try {
         parse[Tweet](json)
       } catch {
