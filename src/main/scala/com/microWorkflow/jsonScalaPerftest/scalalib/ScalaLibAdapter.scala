@@ -27,6 +27,7 @@ class ScalaLibAdapter(name: String) extends LibraryAdapter(name) {
 
   override def runOnce(json: String, doMap:Boolean) = {
     val root = JSON.parseFull(json)
+    root
     /*
     Json(json) match {
       case obj: JsonObject => if (doMap) ToObject[Tweet](obj)

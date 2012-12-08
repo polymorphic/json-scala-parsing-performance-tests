@@ -100,11 +100,23 @@ class LiftJsonAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String, doMap:Boolean) {
+  override def runOnce(json: String, doMap:Boolean) = {
     implicit val formats = DefaultFormats
     parse(json) match {
-      case obj: JObject => List(obj.extract[Tweet])
-      case array: JArray => array.extract[List[Tweet]]
+      case obj: JObject => {
+        if (doMap) {
+           List(obj.extract[Tweet])   
+        } else {
+           obj
+        }
+      }
+      case array: JArray => {
+        if (doMap) {
+          array.extract[List[Tweet]]
+        } else {
+          array
+        }
+      }
       case _ => List[Tweet]()
     }
   }

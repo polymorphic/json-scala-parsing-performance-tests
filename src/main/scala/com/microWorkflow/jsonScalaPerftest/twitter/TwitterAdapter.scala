@@ -10,6 +10,7 @@ class TwitterAdapter(name:String) extends LibraryAdapter(name) {
   
   def runOnce(json: String, doMap:Boolean) = {
     val tweets = parse(json)
+    tweets
   }
 
 }

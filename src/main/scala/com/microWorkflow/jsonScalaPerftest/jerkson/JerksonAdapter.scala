@@ -4,6 +4,7 @@ import com.codahale.jerkson.JsonSnakeCase
 import org.codehaus.jackson.map.ObjectMapper
 import com.codahale.jerkson.Json._
 import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.codahale.jerkson.AST.JValue
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,12 +39,16 @@ class JerksonAdapter(name: String) extends LibraryAdapter(name) {
  var mapper: ObjectMapper = _
 
   override def initialize() {
-    mapper = new ObjectMapper()
+    //mapper = new ObjectMapper()
   }
 
   override def runOnce(json: String, doMap:Boolean) = {
       try {
-        parse[Tweet](json)
+        if (doMap) {
+          parse[Tweet](json)
+        } else {
+          parse[JValue](json)
+        }
       } catch {
         case pe: com.codahale.jerkson.ParsingException =>
           null
