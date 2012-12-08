@@ -3,7 +3,7 @@ package com.microWorkflow.jsonScalaPerftest.jsonsmart
 import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
 import net.minidev.json.JSONValue.parse
 
-class JsonSmartAdapter extends LibraryAdapter {
+class JsonSmartAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 

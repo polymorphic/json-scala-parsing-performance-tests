@@ -48,7 +48,8 @@ libraryDependencies ++= Seq (
     "net.liftweb" % "lift-json_2.9.1" % "2.4",
     "net.minidev" % "json-smart" % "1.1.1",
     "com.rojoma" %% "rojoma-json" % "2.0.0",
-    "io.spray" %% "spray-json" % "1.2.3" cross CrossVersion.full
+    "io.spray" %% "spray-json" % "1.2.3" cross CrossVersion.full,
+    "com.yammer.metrics" % "metrics-core" % "2.1.3"
   // "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
   // "org.scalaz" %% "scalaz-effect" % "7.0.0-M3",
   // "org.scalacheck" %% "scalacheck" % "1.10.0" % "test"

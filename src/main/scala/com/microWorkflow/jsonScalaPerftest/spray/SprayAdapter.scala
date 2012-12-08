@@ -3,7 +3,7 @@ package com.microWorkflow.jsonScalaPerftest.spray
 import com.microWorkflow.jsonScalaPerftest.LibraryAdapter
 import spray.json._
 
-class SprayAdapter extends LibraryAdapter {
+class SprayAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 

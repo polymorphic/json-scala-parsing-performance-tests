@@ -3,7 +3,7 @@ package com.microWorkflow.jsonScalaPerftest.persist
 import com.persist.JsonOps._
 import com.persist.JsonMapper._
 
-import com.microWorkflow.jsonScalaPerftest.TimeMeasurements
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
 
 /**
  * Created with IntelliJ IDEA.
@@ -97,19 +97,16 @@ case class UserMention(indices: Seq[Int], name: String)
 case class Entities(hashtags: Seq[Hashtag], urls: Seq[Url], user_mentions: Seq[UserMention])
 case class Tweet(id_str: String, text: String, entities: Entities)
 
-class PersistAdapter extends TimeMeasurements {
+class PersistAdapter(name: String) extends LibraryAdapter(name) {
 
-  def measure(json: String, iterations: Int) = {
-    val startUserTime = getUserTime
-    //implicit val formats = DefaultFormats
+  override def initialize() { /* nop */ }
 
-    val tweets = Json(json) match {
+  override def runOnce(json: String) = {
+    Json(json) match {
       case obj: JsonObject => ToObject[Tweet](obj)
       case array: JsonArray => //array.extract[List[Tweet]]
       case _ => List[Tweet]()
     }
-    val userTime = getUserTime - startUserTime
-    userTime
   }
 
 }

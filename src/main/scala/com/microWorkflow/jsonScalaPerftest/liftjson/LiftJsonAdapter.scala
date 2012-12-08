@@ -96,7 +96,7 @@ case class UserMention(indices: Array[Int], name: String)
 case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Array[UserMention])
 case class Tweet(id_str: String, text: String, entities: Entities)
 
-class LiftJsonAdapter extends LibraryAdapter {
+class LiftJsonAdapter(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 

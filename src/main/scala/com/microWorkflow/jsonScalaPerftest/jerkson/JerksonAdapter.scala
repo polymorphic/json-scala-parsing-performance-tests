@@ -34,7 +34,7 @@ case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Ar
 case class Tweet(idStr: String, text: String, entities: Entities)
 
 
-class JerksonAdapter extends LibraryAdapter {
+class JerksonAdapter(name: String) extends LibraryAdapter(name) {
  var mapper: ObjectMapper = _
 
   override def initialize() {
