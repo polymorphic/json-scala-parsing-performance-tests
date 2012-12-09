@@ -2,8 +2,9 @@ package com.microWorkflow.jsonScalaPerftest
 
 import java.io.File
 import io.Source
-import com.yammer.metrics.reporting.ConsoleReporter
+import com.yammer.metrics.reporting.{CsvReporter, ConsoleReporter}
 import java.util.concurrent.TimeUnit
+import fr.janalyse.jmx.JMX
 
 case class Dataset(fileName: String, name: String) {
 
@@ -68,11 +69,22 @@ object Main extends App {
 
   val categories = Category.getFilesMatching("data", f => f.isDirectory).map(d => new Category(d.getCanonicalPath))
 
-  ConsoleReporter.enable(3, TimeUnit.SECONDS)
-  //for (count <- 1 to 1000) {
-    for (category <- categories) {
-      adapters.foreach( each => category.measure(each,false))
+//  ConsoleReporter.enable(3, TimeUnit.SECONDS)
+//  for (count <- 1 to 100000) {
+  categories.flatMap(c => (adapters map { each => c.measure(each, doMap = false)}))
+  //  }
+
+  JMX.once() { jmx =>
+    {
+      val beans = jmx.mbeans().filter(b => b.name.contains("microWorkflow".toCharArray))
+      for (bean <- beans) {
+        val mean = bean.getDouble("Mean") match {
+          case Some(d) => d
+          case None => 0.0
+        }
+        println("%s: %fms".format(bean.name.substring(bean.name.indexOf('=')+1), mean))
+      }
     }
-  //}
+  }
   println("Done")
 }

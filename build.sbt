@@ -49,7 +49,8 @@ libraryDependencies ++= Seq (
     "net.minidev" % "json-smart" % "1.1.1",
     "com.rojoma" %% "rojoma-json" % "2.0.0",
     "io.spray" %% "spray-json" % "1.2.3" cross CrossVersion.full,
-    "com.yammer.metrics" % "metrics-core" % "2.1.3"
+    "com.yammer.metrics" % "metrics-core" % "2.1.3",
+    "fr.janalyse" %% "janalyse-jmx" % "0.5.0" % "compile"
   // "org.scalaz" %% "scalaz-core" % "7.0.0-M3",
   // "org.scalaz" %% "scalaz-effect" % "7.0.0-M3",
   // "org.scalacheck" %% "scalacheck" % "1.10.0" % "test"
@@ -58,7 +59,8 @@ libraryDependencies ++= Seq (
 /* you may need these repos */
 resolvers ++= Seq(
   "spray" at "http://repo.spray.io",
-  "coda" at "http://repo.codahale.com"
+  "coda" at "http://repo.codahale.com",
+  "JAnalyse Repository" at "http://www.janalyse.fr/repository/"
   // Resolvers.sonatypeRepo("snapshots")
   // Resolvers.typesafeIvyRepo("snapshots")
   // Resolvers.typesafeIvyRepo("releases")
