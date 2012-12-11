@@ -3,7 +3,7 @@ package com.microWorkflow.jsonScalaPerftest.persist
 import com.persist.JsonOps._
 import com.persist.JsonMapper._
 
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
 
 /**
  * Created with IntelliJ IDEA.
@@ -97,7 +97,7 @@ case class UserMention(indices: Seq[Int], name: String)
 case class Entities(hashtags: Seq[Hashtag], urls: Seq[Url], user_mentions: Seq[UserMention])
 case class Tweet(id_str: String, text: String, entities: Entities)
 
-class PersistAdapter(name: String) extends LibraryAdapter(name) {
+class PersistAdaptor(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 

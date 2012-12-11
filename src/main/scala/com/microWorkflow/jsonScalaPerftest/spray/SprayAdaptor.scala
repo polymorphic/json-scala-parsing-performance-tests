@@ -1,6 +1,6 @@
 package com.microWorkflow.jsonScalaPerftest.spray
 
-import com.microWorkflow.jsonScalaPerftest.LibraryAdapter
+import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 import spray.json._
 
 case class Url(indices: Array[Int], url: String)
@@ -16,7 +16,7 @@ object myJsonProtocol extends DefaultJsonProtocol {
     implicit val tweetFormat = jsonFormat3(Tweet)
 }
 
-class SprayAdapter(name: String) extends LibraryAdapter(name) {
+class SprayAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def initialize() { /* nop */ }
 

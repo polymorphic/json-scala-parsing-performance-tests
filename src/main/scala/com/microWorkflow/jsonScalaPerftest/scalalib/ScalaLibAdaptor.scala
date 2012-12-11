@@ -2,7 +2,7 @@ package com.microWorkflow.jsonScalaPerftest.scalalib
 
 import com.persist.JsonOps._
 import com.persist.JsonMapper._
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
 import scala.util.parsing.json.JSON
 
 /**
@@ -21,7 +21,7 @@ case class Entities(hashtags: Seq[Hashtag], urls: Seq[Url], user_mentions: Seq[U
 case class Tweet(id_str: String, text: String, entities: Entities)
 */
 
-class ScalaLibAdapter(name: String) extends LibraryAdapter(name) {
+class ScalaLibAdaptor(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 

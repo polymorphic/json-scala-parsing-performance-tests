@@ -2,10 +2,10 @@ package com.microWorkflow.jsonScalaPerftest.socrata
 
 import spray.json._
 import com.rojoma.json.io.JsonReader
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
 
 
-class SocrataAdapter(name:String) extends LibraryAdapter(name) {
+class SocrataAdaptor(name:String) extends LibraryAdapter(name) {
 
   def initialize() {}
   

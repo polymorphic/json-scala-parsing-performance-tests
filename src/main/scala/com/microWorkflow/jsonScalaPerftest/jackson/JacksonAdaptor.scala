@@ -2,7 +2,7 @@ package com.microWorkflow.jsonScalaPerftest.jackson
 
 import com.persist.JsonOps._
 import com.persist.JsonMapper._
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
 import org.codehaus.jackson.map.ObjectMapper
 import org.codehaus.jackson.map.DeserializationConfig
 
@@ -70,7 +70,7 @@ class Tweet {
   def setEntities(e:Entities) { entities = e}
 }
 
-class JacksonAdapter(name: String) extends LibraryAdapter(name) {
+class JacksonAdaptor(name: String) extends LibraryAdapter(name) {
   
   var m:ObjectMapper = null
   

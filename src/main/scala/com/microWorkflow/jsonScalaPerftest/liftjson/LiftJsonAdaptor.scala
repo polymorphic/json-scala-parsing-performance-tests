@@ -1,7 +1,7 @@
 package com.microWorkflow.jsonScalaPerftest.liftjson
 
 import net.liftweb.json._
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,7 +96,7 @@ case class UserMention(indices: Array[Int], name: String)
 case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Array[UserMention])
 case class Tweet(id_str: String, text: String, entities: Entities)
 
-class LiftJsonAdapter(name: String) extends LibraryAdapter(name) {
+class LiftJsonAdaptor(name: String) extends LibraryAdapter(name) {
 
   override def initialize() { /* nop */ }
 

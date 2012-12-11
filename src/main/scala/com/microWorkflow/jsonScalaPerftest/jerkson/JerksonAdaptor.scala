@@ -3,7 +3,7 @@ package com.microWorkflow.jsonScalaPerftest.jerkson
 import com.codahale.jerkson.JsonSnakeCase
 import org.codehaus.jackson.map.ObjectMapper
 import com.codahale.jerkson.Json._
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdapter, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
 import com.codahale.jerkson.AST.JValue
 
 /**
@@ -35,7 +35,7 @@ case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Ar
 case class Tweet(idStr: String, text: String, entities: Entities)
 
 
-class JerksonAdapter(name: String) extends LibraryAdapter(name) {
+class JerksonAdaptor(name: String) extends LibraryAdapter(name) {
  var mapper: ObjectMapper = _
 
   override def initialize() {

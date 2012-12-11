@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
  * Time: 7:58 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract class LibraryAdapter(name: String) extends TimeMeasurements {
+abstract class LibraryAdaptor(name: String) extends TimeMeasurements {
   lazy val initTimer = Metrics.newTimer(getClass, "%s-init".format(name), TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS)
   lazy val mainTimer = Metrics.newTimer(getClass, "%s-main".format(name), TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS)
 
