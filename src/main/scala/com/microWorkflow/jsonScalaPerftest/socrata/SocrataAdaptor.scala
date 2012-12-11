@@ -1,18 +1,19 @@
 package com.microWorkflow.jsonScalaPerftest.socrata
 
-import spray.json._
 import com.rojoma.json.io.JsonReader
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 
-
-class SocrataAdaptor(name:String) extends LibraryAdapter(name) {
+class SocrataAdaptor(name:String) extends LibraryAdaptor(name) {
 
   def initialize() {}
   
   def runOnce(json: String, doMap:Boolean) = {
-
-    val tweets = JsonReader.fromString(json)
-    tweets
+    if (doMap)
+      JsonReader.fromString(json) // TODO: map?
+    else
+      JsonReader.fromString(json)
   }
+
+  override def hasMap = false
 
 }

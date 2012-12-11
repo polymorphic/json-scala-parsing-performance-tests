@@ -8,6 +8,7 @@ case class Hashtag(indices: Array[Int], text: String)
 case class UserMention(indices: Array[Int], name: String)
 case class Entities(hashtags: Array[Hashtag], urls: Array[Url], user_mentions: Array[UserMention])
 case class Tweet(id_str: String, text: String, entities: Entities)
+
 object myJsonProtocol extends DefaultJsonProtocol {
     implicit val urlFormat = jsonFormat2(Url)
     implicit val hashtagFormat = jsonFormat2(Hashtag)
@@ -28,5 +29,7 @@ class SprayAdaptor(name: String) extends LibraryAdaptor(name) {
       json.asJson
     }
   }
+
+  override def hasMap = true
 
 }

@@ -4,8 +4,8 @@ import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 import net.minidev.json.JSONValue.parse
 
 case class User ( utc_offset: Int
-                  , time_zone: String
-                  )
+                , time_zone: String
+                )
 
 case class Url(indices: Array[Int], url: String)
 
@@ -25,9 +25,11 @@ class JsonSmartAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def runOnce(json: String, doMap:Boolean) = {
     if (doMap)
-      parse(json /* , classOf[Tweet] */)
+      parse(json /* , classOf[Tweet] */)  // TODO: add map (JsonSmart v.2)
     else
       parse(json)
   }
+
+  override def hasMap = false
 
 }

@@ -42,7 +42,7 @@ case class Category(directoryName: String, name: String) {
     sb.toString()
   }
 
-  def measure(adapter: LibraryAdapter, doMap: Boolean) {
+  def measure(adapter: LibraryAdaptor, doMap: Boolean) {
     for (dataset <- datasets) {
       adapter.measure(dataset, doMap)
     }
@@ -59,15 +59,15 @@ object Category {
 
 case class Experiment(measurementsPath: String) {
 
-  val adapters = Array(new liftjson.LiftJsonAdapter("lift")
-    , new jerkson.JerksonAdapter("jerkson")
-    , new jsonsmart.JsonSmartAdapter("JsonSmart")
-    , new spray.SprayAdapter("spray")
-    , new persist.PersistAdapter("persist")
-    , new twitter.TwitterAdapter("twitter")
-    , new socrata.SocrataAdapter("socrata")
-    , new scalalib.ScalaLibAdapter("scalalib")
-    , new jackson.JacksonAdapter("jackson")
+  val adapters = Array(new liftjson.LiftJsonAdaptor("lift")
+    , new jerkson.JerksonAdaptor("jerkson")
+    , new jsonsmart.JsonSmartAdaptor("JsonSmart")
+    , new spray.SprayAdaptor("spray")
+    , new persist.PersistAdaptor("persist")
+    , new twitter.TwitterAdaptor("twitter")
+    , new socrata.SocrataAdaptor("socrata")
+    , new scalalib.ScalaLibAdaptor("scalalib")
+    , new jackson.JacksonAdaptor("jackson")
   )
 
   val loopCounter = Metrics.newCounter(this.getClass, "main loop")
@@ -77,28 +77,26 @@ case class Experiment(measurementsPath: String) {
   def run(iterations: Int, doMap: Boolean) = {
     loopCounter.clear()
     val oldFiles = Category.getFilesMatching(measurementsPath, f => f.isFile)
+    println("Removing %d old files".format(oldFiles.length))
     if (oldFiles != null)
       oldFiles.foreach(f => f.delete())
     CsvReporter.enable(new File(measurementsPath), 100, TimeUnit.MILLISECONDS)
+    val adaptersToTest = if (doMap) adapters.filter(_.hasMap) else adapters
     for (count <- 1 to iterations) {
-      categories.flatMap(c => (adapters map {
+      categories.flatMap(c => (adaptersToTest.map {
         each => c.measure(each, doMap)
       }))
       loopCounter.inc()
     }
   }
 
-  def takeMeasurements(iterations: Int) {
+  def takeMeasurements(iterations: Int, doMap: Boolean) {
     val where = new File(measurementsPath)
     where.mkdirs()
     print("Priming caches...")
-    run(iterations, true)
-    print("Measuring timings w/o mapping...")
-    run(iterations, false)
-    Category.getFilesMatching(measurementsPath, f => f.isFile && f.getName.contains(".csv".toCharArray))
-            .foreach(f => f.renameTo(new File("nomap" + f.getName)))
-    print("Measuring timings w/ mapping...")
-    run(iterations, true)
+    run(iterations, doMap)
+    print("Measuring timings...")
+    run(iterations, doMap)
   }
 
   def printMeanValues() {
@@ -118,8 +116,16 @@ case class Experiment(measurementsPath: String) {
 }
 
 
-object Main extends App {
-  val e = Experiment("/tmp/measurements1")
-  e.takeMeasurements(10)
-  println("Done")
+object Main {
+
+  def main(args: Array[String]) {
+    val where = if (args.length>0) args(0) else "/tmp/measurements"
+    val iterations:Int = if (args.length>1) args(1).toInt else 100
+    val doMap = if (args.length>2) args(2).equalsIgnoreCase("-map") else false
+    println("Runing %d iterations %s object mapping; test results in %s"
+      .format(iterations, if (doMap) "with" else "without", where))
+    val e = Experiment(where)
+    e.takeMeasurements(iterations, doMap)
+    println("Done")
+  }
 }

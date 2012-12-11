@@ -16,6 +16,8 @@ abstract class LibraryAdaptor(name: String) extends TimeMeasurements {
 
   def getName = name
 
+  def hasMap: Boolean
+
   def initialize()
 
   def runOnce(json: String, doMap:Boolean): Any

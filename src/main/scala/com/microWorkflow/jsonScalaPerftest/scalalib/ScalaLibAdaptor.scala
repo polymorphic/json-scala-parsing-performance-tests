@@ -1,8 +1,6 @@
 package com.microWorkflow.jsonScalaPerftest.scalalib
 
-import com.persist.JsonOps._
-import com.persist.JsonMapper._
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 import scala.util.parsing.json.JSON
 
 /**
@@ -21,20 +19,17 @@ case class Entities(hashtags: Seq[Hashtag], urls: Seq[Url], user_mentions: Seq[U
 case class Tweet(id_str: String, text: String, entities: Entities)
 */
 
-class ScalaLibAdaptor(name: String) extends LibraryAdapter(name) {
+class ScalaLibAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def initialize() { /* nop */ }
 
   override def runOnce(json: String, doMap:Boolean) = {
-    val root = JSON.parseFull(json)
-    root
-    /*
-    Json(json) match {
-      case obj: JsonObject => if (doMap) ToObject[Tweet](obj)
-      case array: JsonArray => //array.extract[List[Tweet]]
-      case _ => List[Tweet]()
-    }
-    */
+    if (doMap)
+      JSON.parseFull(json) // TODO: add map
+    else
+      JSON.parseFull(json)
   }
+
+  override def hasMap = false
 
 }

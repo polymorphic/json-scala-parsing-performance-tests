@@ -1,9 +1,8 @@
 package com.microWorkflow.jsonScalaPerftest.jerkson
 
 import com.codahale.jerkson.JsonSnakeCase
-import org.codehaus.jackson.map.ObjectMapper
 import com.codahale.jerkson.Json._
-import com.microWorkflow.jsonScalaPerftest.{LibraryAdaptor, TimeMeasurements}
+import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 import com.codahale.jerkson.AST.JValue
 
 /**
@@ -35,26 +34,20 @@ case class Entities(hashtags: Array[Hashtag], urls: Array[Url], userMentions: Ar
 case class Tweet(idStr: String, text: String, entities: Entities)
 
 
-class JerksonAdaptor(name: String) extends LibraryAdapter(name) {
- var mapper: ObjectMapper = _
+class JerksonAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def initialize() {
-    //mapper = new ObjectMapper()
+    /* nop */
   }
 
   override def runOnce(json: String, doMap:Boolean) = {
-      try {
-        if (doMap) {
-          parse[Tweet](json)
-        } else {
-          parse[JValue](json)
-        }
-      } catch {
-        case pe: com.codahale.jerkson.ParsingException =>
-          null
-        case iae: java.lang.IllegalArgumentException =>
-          null
-      }
+    if (doMap) {
+      parse[Tweet](json)
+    } else {
+      parse[JValue](json)
+    }
   }
+
+  override def hasMap = true
 
 }
