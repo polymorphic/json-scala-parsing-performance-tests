@@ -104,7 +104,7 @@ class PersistAdapter(name: String) extends LibraryAdapter(name) {
   override def runOnce(json: String, doMap:Boolean) = {
     val obj = Json(json) 
     if (doMap) {
-      ToObject[Tweet](obj) 
+      ToObject[Tweet](obj)
     }else {
       obj
     }

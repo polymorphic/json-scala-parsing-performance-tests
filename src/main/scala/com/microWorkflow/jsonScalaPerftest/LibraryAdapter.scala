@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit
  * To change this template use File | Settings | File Templates.
  */
 abstract class LibraryAdapter(name: String) extends TimeMeasurements {
-  lazy val initTimer = Metrics.newTimer(getClass, "%s-init".format(name), TimeUnit.MILLISECONDS, TimeUnit.NANOSECONDS)
-  lazy val mainTimer = Metrics.newTimer(getClass, "%s-main".format(name), TimeUnit.MILLISECONDS, TimeUnit.NANOSECONDS)
+  lazy val initTimer = Metrics.newTimer(getClass, "%s-init".format(name), TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS)
+  lazy val mainTimer = Metrics.newTimer(getClass, "%s-main".format(name), TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS)
 
   def getName = name
 
@@ -20,7 +20,7 @@ abstract class LibraryAdapter(name: String) extends TimeMeasurements {
 
   def runOnce(json: String, doMap:Boolean): Any
 
-  def measure(dataset: Dataset,doMap:Boolean) = {
+  def measure(dataset: Dataset, doMap:Boolean) = {
     val context1 = initTimer.time()
     try {
       initialize()
@@ -37,5 +37,10 @@ abstract class LibraryAdapter(name: String) extends TimeMeasurements {
     } finally {
       context2.stop()
     }
+  }
+
+  def resetTimers() {
+    initTimer.clear()
+    mainTimer.clear()
   }
 }
