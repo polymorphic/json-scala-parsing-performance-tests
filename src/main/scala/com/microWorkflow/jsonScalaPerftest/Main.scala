@@ -65,7 +65,7 @@ case class Experiment(measurementsPath: String) {
     , new spray.SprayAdaptor("spray")
     , new persist.PersistAdaptor("persist")
     , new twitter.TwitterAdaptor("twitter")
-    , new socrata.SocrataAdaptor("socrata")
+    , new rojoma.RojomaAdaptor("rojoma")
     , new scalalib.ScalaLibAdaptor("scalalib")
     , new jackson.JacksonAdaptor("jackson")
   )

@@ -1,9 +1,9 @@
-package com.microWorkflow.jsonScalaPerftest.socrata
+package com.microWorkflow.jsonScalaPerftest.rojoma
 
 import com.rojoma.json.io.JsonReader
 import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 
-class SocrataAdaptor(name:String) extends LibraryAdaptor(name) {
+class RojomaAdaptor(name:String) extends LibraryAdaptor(name) {
 
   def initialize() {}
   
