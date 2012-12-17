@@ -1,63 +1,13 @@
+/*
+ * Copyright (c) 2012 Dragos Manolescu.
+ *
+ * Published under the Apache 2.0 license; see http://www.apache.org/licenses/LICENSE-2.0.html
+ */
 package com.microWorkflow.jsonScalaPerftest
 
-import java.io.File
-import io.Source
-import com.yammer.metrics.reporting.CsvReporter
-import java.util.concurrent.TimeUnit
-import fr.janalyse.jmx.JMX
-import com.yammer.metrics.Metrics
+import collection.immutable.HashMap
 
-case class Dataset(fileName: String, name: String) {
-
-  def this(fn: String) = {
-    this(fn, fn.substring(fn.lastIndexOf('/') + 1, fn.lastIndexOf('.')))
-  }
-
-  val docs: List[String] = Source.fromFile(fileName).getLines().toList
-
-  override def toString = {
-    val sb = new StringBuilder
-    sb.append(name)
-    sb.append(" (")
-    sb.append(docs.length)
-    sb.append(" documents)")
-    sb.toString()
-  }
-}
-
-case class Category(directoryName: String, name: String) {
-
-  def this(fn: String) = {
-    this(fn, fn.substring(fn.lastIndexOf('/') + 1))
-  }
-
-  val datasets = Category.getFilesMatching(directoryName, fn => fn.isFile).map {
-    each => new Dataset(each.getCanonicalPath)
-  }
-
-  override def toString = {
-    val sb = new StringBuilder
-    sb.append(name)
-    sb.append(datasets.map(ds => ds.toString).mkString(": ", ", ", ""))
-    sb.toString()
-  }
-
-  def measure(adapter: LibraryAdaptor, doMap: Boolean) {
-    for (dataset <- datasets) {
-      adapter.measure(dataset, doMap)
-    }
-  }
-}
-
-object Category {
-  def getFilesMatching(path: String, p: File => Boolean) = {
-    val dir = new java.io.File(path).getAbsolutePath
-    new File(dir).listFiles.filter(file => p(file))
-  }
-}
-
-
-case class Experiment(measurementsPath: String) {
+case class Experiment(warmUpIterations: Int=5) {
 
   val adapters = Array(new liftjson.LiftJsonAdaptor("lift")
     , new jerkson.JerksonAdaptor("jerkson")
@@ -70,62 +20,65 @@ case class Experiment(measurementsPath: String) {
     , new jackson.JacksonAdaptor("jackson")
   )
 
-  val loopCounter = Metrics.newCounter(this.getClass, "main loop")
+  val categories = Category
+    .getFilesMatching("data", f => f.isDirectory)
+    .map(d => new Category(d.getCanonicalPath))
 
-  val categories = Category.getFilesMatching("data", f => f.isDirectory).map(d => new Category(d.getCanonicalPath))
-
-  def run(iterations: Int, doMap: Boolean) = {
-    loopCounter.clear()
-    val oldFiles = Category.getFilesMatching(measurementsPath, f => f.isFile)
-    println("Removing %d old files".format(oldFiles.length))
-    if (oldFiles != null)
-      oldFiles.foreach(f => f.delete())
-    CsvReporter.enable(new File(measurementsPath), 100, TimeUnit.MILLISECONDS)
+  def run(iterations: Int, doMap: Boolean): Array[(String, HashMap[String, Measurement])] = {
     val adaptersToTest = if (doMap) adapters.filter(_.hasMap) else adapters
-    for (count <- 1 to iterations) {
-      categories.flatMap(c => (adaptersToTest.map {
-        each => c.measure(each, doMap)
-      }))
-      loopCounter.inc()
-    }
+     categories.flatMap(c => (adaptersToTest.map {
+        each => (c.name -> c.measure(each, doMap, iterations))
+     }))
   }
 
-  def takeMeasurements(iterations: Int, doMap: Boolean) {
-    val where = new File(measurementsPath)
-    where.mkdirs()
-    print("Priming caches...")
+  def takeMeasurements(iterations: Int, doMap: Boolean): Array[(String, HashMap[String, Measurement])] = {
+    println("Warming up (%d iterations)...".format(warmUpIterations))
+    run(warmUpIterations, doMap)
+    println("Measuring (%d iterations)...".format(iterations))
     run(iterations, doMap)
-    print("Measuring timings...")
-    run(iterations, doMap)
-  }
-
-  def printMeanValues() {
-    JMX.once() {
-      jmx => {
-        val beans = jmx.mbeans().filter(b => b.name.contains("microWorkflow".toCharArray))
-        for (bean <- beans) {
-          val mean = bean.getDouble("Mean") match {
-            case Some(d) => d
-            case None => 0.0
-          }
-          println("%s: %fms".format(bean.name.substring(bean.name.indexOf('=') + 1), mean))
-        }
-      }
-    }
   }
 }
 
 
 object Main {
+  val usage =
+    """
+      |Usage: com.microWorkflow.jsonScalaPerftest.Main [-n num] [-w num] [-map]
+    """.stripMargin
 
   def main(args: Array[String]) {
-    val where = if (args.length>0) args(0) else "/tmp/measurements"
-    val iterations:Int = if (args.length>1) args(1).toInt else 100
-    val doMap = if (args.length>2) args(2).equalsIgnoreCase("-map") else false
-    println("Runing %d iterations %s object mapping; test results in %s"
-      .format(iterations, if (doMap) "with" else "without", where))
-    val e = Experiment(where)
-    e.takeMeasurements(iterations, doMap)
-    println("Done")
+    if (args.isEmpty) println(usage)
+    else {
+
+      def nextOption(map: Map[Symbol, Any], list: List[String]): Map[Symbol, Any] = {
+        list match {
+          case Nil => map
+          case "-n" :: value :: tail => nextOption(map + ('iterations -> value.toInt), tail)
+          case "-w" :: value :: tail => nextOption(map + ('warmUp -> value.toInt), tail)
+          case "-map" :: tail => nextOption(map + ('map -> true), tail)
+          case _ :: tail =>
+            println("Don't know what to do with '%s'%s".format(list.head, usage))
+            sys.exit(1)
+        }
+      }
+      val options = nextOption(new HashMap[Symbol, Any](), args.toList)
+
+      val iterations = options.getOrElse('iterations, 100).asInstanceOf[Int]
+      val doMap = options.getOrElse('map, false).asInstanceOf[Boolean]
+      val warmUpIterations = options.getOrElse('warmUp, 5).asInstanceOf[Int]
+
+      println("Runing %d iterations %s object mapping"
+        .format(iterations, if (doMap) "with" else "without"))
+      val experiment = Experiment(warmUpIterations)
+      val ms = experiment.takeMeasurements(iterations, doMap)
+      for (m <- ms) {
+        print("Category: %s\n".format(m._1))
+        for (d <- m._2.iterator)
+        print("\t dataset '%s', measurement: %s\n".format(d._1, d._2))
+      }
+
+      sys.exit()
+    }
+
   }
 }
