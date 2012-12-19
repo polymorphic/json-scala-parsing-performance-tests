@@ -43,7 +43,7 @@ mainClass in (Compile, run) := Some("com.microWorkflow.jsonScalaPerftest.Main")
 
 /* dependencies */
 libraryDependencies ++= Seq (
-    "com.persist" % "persist-json_2.9.2" % "0.9-RC1",
+    "com.persist" % "persist-json_2.9.2" % "0.9-RC3",
     "com.codahale" % "jerkson_2.9.1" % "0.5.0",
     "net.liftweb" % "lift-json_2.9.1" % "2.4",
     "net.minidev" % "json-smart" % "1.1.1",
