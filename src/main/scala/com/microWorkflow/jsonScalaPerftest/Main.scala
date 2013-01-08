@@ -7,38 +7,6 @@ package com.microWorkflow.jsonScalaPerftest
 
 import collection.immutable.HashMap
 
-case class Experiment(warmUpIterations: Int=5) {
-
-  val adapters = Array(new liftjson.LiftJsonAdaptor("lift")
-    , new jerkson.JerksonAdaptor("jerkson")
-    , new jsonsmart.JsonSmartAdaptor("JsonSmart")
-    , new spray.SprayAdaptor("spray")
-    , new persist.PersistAdaptor("persist")
-    , new twitter.TwitterAdaptor("twitter")
-    , new rojoma.RojomaAdaptor("rojoma")
-    , new scalalib.ScalaLibAdaptor("scalalib")
-    , new jackson.JacksonAdaptor("jackson")
-  )
-
-  val categories = Category
-    .getFilesMatching("data", f => f.isDirectory)
-    .map(d => new Category(d.getCanonicalPath))
-
-  def run(iterations: Int, doMap: Boolean): Array[(String, HashMap[String, Measurement])] = {
-    val adaptersToTest = if (doMap) adapters.filter(_.hasMap) else adapters
-     categories.flatMap(c => (adaptersToTest.map {
-        each => (c.name -> c.measure(each, doMap, iterations))
-     }))
-  }
-
-  def takeMeasurements(iterations: Int, doMap: Boolean): Array[(String, HashMap[String, Measurement])] = {
-    println("Warming up (%d iterations)...".format(warmUpIterations))
-    run(warmUpIterations, doMap)
-    println("Measuring (%d iterations)...".format(iterations))
-    run(iterations, doMap)
-  }
-}
-
 
 object Main {
   val usage =
@@ -68,10 +36,9 @@ object Main {
     val doMap = options.getOrElse('map, false).asInstanceOf[Boolean]
     val warmUpIterations = options.getOrElse('warmUp, 5).asInstanceOf[Int]
 
-    println("Runing %d iterations %s object mapping"
-      .format(iterations, if (doMap) "with" else "without"))
+    println("Runing %d iterations %s object mapping".format(iterations, if (doMap) "with" else "without"))
     val experiment = Experiment(warmUpIterations)
-    val ms = experiment.takeMeasurements(iterations, doMap)
+    val ms = if (doMap) experiment.measureMapping(iterations) else experiment.measureParsing(iterations)
     for (m <- ms) {
       print("Category: %s\n".format(m._1))
       for (d <- m._2.iterator)
