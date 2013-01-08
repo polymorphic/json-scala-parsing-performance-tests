@@ -20,19 +20,24 @@ abstract class LibraryAdaptor(name: String) extends TimeMeasurements {
 
   def initialize()
 
-  def runOnce(json: String, doMap:Boolean): Any
+  def parseOnce(json: String): Any
+
+  def mapOnce(json: String): Any
 
   def measure(dataset: Dataset, doMap:Boolean, iterations: Int) {
     initialize()
 
     val context2 = mainTimer.time()
+
+    val f: String => Any = if (doMap) mapOnce else parseOnce
+
     try {
       for (count <- 1 to iterations) {
         for (doc <- dataset.docs)
-          runOnce(doc, doMap)
+          f(doc)
       }
     } catch {
-      case ex:Exception => println("%s bombed while processing %s (%s)".format(name, dataset.name, ex.getMessage))
+      case ex: Exception => println("%s bombed while processing %s (%s)".format(name, dataset.name, ex.getMessage))
     } finally {
       context2.stop()
     }

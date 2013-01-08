@@ -7,12 +7,11 @@ class TwitterAdaptor(name:String) extends LibraryAdaptor(name) {
 
   def initialize() {}
   
-  def runOnce(json: String, doMap:Boolean) = {
-    if (doMap)
-      parse(json)
-    else
+  def parseOnce(json: String) = {
       parse(json)
   }
+
+  override def mapOnce(json: String) = null
 
   override def hasMap = false
 

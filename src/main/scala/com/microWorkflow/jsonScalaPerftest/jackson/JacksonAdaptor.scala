@@ -4,14 +4,6 @@ import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 import org.codehaus.jackson.map.ObjectMapper
 import org.codehaus.jackson.map.DeserializationConfig
 
-/**
- * Created with IntelliJ IDEA.
- * User: dam
- * Date: 11/24/12
- * Time: 9:56 PM
- * To change this template use File | Settings | File Templates.
- */
-
 class Url {
   private var indices:Array[Int] = _
   private var url:String = _
@@ -62,21 +54,19 @@ class Tweet {
 
 class JacksonAdaptor(name: String) extends LibraryAdaptor(name) {
   
-  var m:ObjectMapper = _
+  var m: ObjectMapper = _
   
   override def initialize() { 
     m = new ObjectMapper()
     m.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false)
   }
 
-  override def runOnce(json: String, doMap:Boolean) = {
-    if (doMap) {
-      val rootNode:Tweet = m.readValue(json, classOf[Tweet])
-      rootNode
-    } else {
-      val rootNode = m.readTree(json)
-      rootNode
-    }
+  override def parseOnce(json: String) = {
+      m.readTree(json)
+  }
+
+  override def mapOnce(json: String) = {
+      m.readValue(json, classOf[Tweet])
   }
 
   override def hasMap = true

@@ -21,13 +21,13 @@ class SprayAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String, doMap:Boolean) = {
-    if (doMap) {
-       import myJsonProtocol._
-       json.asJson.convertTo[Tweet]
-    } else {
+  override def parseOnce(json: String) = {
       json.asJson
-    }
+  }
+
+  override def mapOnce(json: String) = {
+      import myJsonProtocol._
+      json.asJson.convertTo[Tweet]
   }
 
   override def hasMap = true

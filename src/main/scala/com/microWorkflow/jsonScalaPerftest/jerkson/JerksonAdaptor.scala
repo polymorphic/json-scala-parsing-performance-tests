@@ -5,14 +5,6 @@ import com.codahale.jerkson.Json._
 import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 import com.codahale.jerkson.AST.JValue
 
-/**
- * Created with IntelliJ IDEA.
- * User: dam
- * Date: 11/24/12
- * Time: 7:00 AM
- * To change this template use File | Settings | File Templates.
- */
-
 @JsonSnakeCase
 case class User ( utc_offset: Int
                   , time_zone: String
@@ -40,12 +32,12 @@ class JerksonAdaptor(name: String) extends LibraryAdaptor(name) {
     /* nop */
   }
 
-  override def runOnce(json: String, doMap:Boolean) = {
-    if (doMap) {
-      parse[Tweet](json)
-    } else {
+  override def parseOnce(json: String) = {
       parse[JValue](json)
-    }
+  }
+
+  override def mapOnce(json: String) = {
+      parse[Tweet](json)
   }
 
   override def hasMap = true

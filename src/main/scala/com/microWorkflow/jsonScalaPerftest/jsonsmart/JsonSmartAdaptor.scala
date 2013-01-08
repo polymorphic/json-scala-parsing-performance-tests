@@ -23,12 +23,11 @@ class JsonSmartAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String, doMap:Boolean) = {
-    if (doMap)
+  override def parseOnce(json: String) = {
       parse(json /* , classOf[Tweet] */)  // TODO: add map (JsonSmart v.2)
-    else
-      parse(json)
   }
+
+  def mapOnce(json: String) = null
 
   override def hasMap = false
 

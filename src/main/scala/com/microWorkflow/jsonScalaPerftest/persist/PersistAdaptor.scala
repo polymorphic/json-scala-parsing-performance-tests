@@ -5,14 +5,6 @@ import com.persist.JsonMapper._
 
 import com.microWorkflow.jsonScalaPerftest.LibraryAdaptor
 
-/**
- * Created with IntelliJ IDEA.
- * User: dam
- * Date: 11/24/12
- * Time: 9:56 PM
- * To change this template use File | Settings | File Templates.
- */
-
 case class Url(indices: Seq[Int], url: String)
 case class Hashtag(indices: Seq[Int], text: String)
 case class UserMention(indices: Seq[Int], name: String)
@@ -23,13 +15,12 @@ class PersistAdaptor(name: String) extends LibraryAdaptor(name) {
 
   override def initialize() { /* nop */ }
 
-  override def runOnce(json: String, doMap:Boolean) = {
-    val obj = Json(json) 
-    if (doMap) {
-      ToObject[Tweet](obj)
-    }else {
-      obj
-    }
+  override def parseOnce(json: String) = {
+    Json(json)
+  }
+
+  override def mapOnce(json: String) = {
+    ToObject[Tweet](Json(json))
   }
 
   override def hasMap = true
