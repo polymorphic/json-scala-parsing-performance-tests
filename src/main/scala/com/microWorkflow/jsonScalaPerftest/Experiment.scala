@@ -29,12 +29,11 @@ case class Experiment(warmUpIterations: Int=5) {
     def run(iterations: Int, libraryAdaptors: Seq[LibraryAdaptor]): Array[(String, HashMap[String, Measurement])] = {
 
       categories.flatMap(category => (libraryAdaptors.map {
-        adaptor => (category.name -> category.measure(adaptor, false, iterations))
+        adaptor => (category.name -> category.measure(adaptor, false, iterations, warmUpIterations))
       }))
     }
-    println("Parsing warm up (%d iterations)...".format(warmUpIterations))
-    run(warmUpIterations, allAdaptors.toSeq)
-    println("Parsing measurement (%d iterations)...".format(iterations))
+
+    println("Parsing measurement (%d warmup, %d iterations)...".format(warmUpIterations, iterations))
     run(iterations, allAdaptors.toSeq)
   }
 
@@ -42,14 +41,12 @@ case class Experiment(warmUpIterations: Int=5) {
     def run(iterations: Int, libraryAdaptors: Seq[LibraryAdaptor]): Array[(String, HashMap[String, Measurement])] = {
 
       categories.flatMap(category => (libraryAdaptors.map {
-        adaptor => (category.name -> category.measure(adaptor, true, iterations))
+        adaptor => (category.name -> category.measure(adaptor, true, iterations, warmUpIterations))
       }))
     }
 
     val targetAdaptors = allAdaptors.filter(_.hasMap)
-    println("Mapping warm up (%d iterations)...".format(warmUpIterations))
-    run(warmUpIterations, targetAdaptors)
-    println("Mapping measurement (%d iterations)...".format(iterations))
+    println("Mapping measurement (%d warmup, %d iterations)...".format(warmUpIterations, iterations))
     run(iterations, targetAdaptors)
   }
 
