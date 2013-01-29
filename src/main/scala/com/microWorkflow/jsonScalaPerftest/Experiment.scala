@@ -11,13 +11,12 @@ import collection.immutable.HashMap
 case class Experiment(warmUpIterations: Int=5) {
 
   val allAdaptors = Array( new liftjson.LiftJsonAdaptor("lift")
-    , new jerkson.JerksonAdaptor("jerkson")
     , new jsonsmart.JsonSmartAdaptor("JsonSmart")
     , new spray.SprayAdaptor("spray")
     , new persist.PersistAdaptor("persist")
-    , new twitter.TwitterAdaptor("twitter")
     , new rojoma.RojomaAdaptor("rojoma")
-    , new scalalib.ScalaLibAdaptor("scalalib")
+//    , new twitter.TwitterAdaptor("twitter")
+//    , new scalalib.ScalaLibAdaptor("scalalib")
     , new jackson.JacksonAdaptor("jackson")
     )
 

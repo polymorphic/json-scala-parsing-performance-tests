@@ -1,0 +1,93 @@
+Measured on 1/29/2013
+
+2.9.2 
+
+Category: facebook
+	 dataset 'entry', measurement: lift-main = 42.0 ms
+Category: facebook
+	 dataset 'entry', measurement: JsonSmart-main = 12.013 ms
+Category: facebook
+	 dataset 'entry', measurement: spray-main = 62.995 ms
+Category: facebook
+	 dataset 'entry', measurement: persist-main = 14.794 ms
+Category: facebook
+	 dataset 'entry', measurement: rojoma-main = 44.311 ms
+Category: facebook
+	 dataset 'entry', measurement: jackson-main = 64.417 ms
+Category: google
+	 dataset 'nature-books', measurement: lift-main = 77.58 ms
+Category: google
+	 dataset 'nature-books', measurement: JsonSmart-main = 20.932 ms
+Category: google
+	 dataset 'nature-books', measurement: spray-main = 1110.782 ms
+Category: google
+	 dataset 'nature-books', measurement: persist-main = 35.906 ms
+Category: google
+	 dataset 'nature-books', measurement: rojoma-main = 117.745 ms
+Category: google
+	 dataset 'nature-books', measurement: jackson-main = 130.545 ms
+Category: twitter
+	 dataset 'tweet', measurement: lift-main = 3.736 ms
+	 dataset '100tweets', measurement: lift-main = 469.641 ms
+Category: twitter
+	 dataset 'tweet', measurement: JsonSmart-main = 2.288 ms
+	 dataset '100tweets', measurement: JsonSmart-main = 300.988 ms
+Category: twitter
+	 dataset 'tweet', measurement: spray-main = 90.958 ms
+	 dataset '100tweets', measurement: spray-main = 10017.25 ms
+Category: twitter
+	 dataset 'tweet', measurement: persist-main = 5.223 ms
+	 dataset '100tweets', measurement: persist-main = 485.744 ms
+Category: twitter
+	 dataset 'tweet', measurement: rojoma-main = 11.364 ms
+	 dataset '100tweets', measurement: rojoma-main = 1215.368 ms
+Category: twitter
+	 dataset 'tweet', measurement: jackson-main = 3.411 ms
+	 dataset '100tweets', measurement: jackson-main = 312.717 ms
+ 
+
+2.10.0
+
+Category: facebook
+	 dataset 'entry', measurement: lift-main = 41.867 ms
+Category: facebook
+	 dataset 'entry', measurement: JsonSmart-main = 10.819 ms
+Category: facebook
+	 dataset 'entry', measurement: spray-main = 60.922 ms
+Category: facebook
+	 dataset 'entry', measurement: persist-main = 14.77 ms
+Category: facebook
+	 dataset 'entry', measurement: rojoma-main = 43.112 ms
+Category: facebook
+	 dataset 'entry', measurement: jackson-main = 61.95 ms
+Category: google
+	 dataset 'nature-books', measurement: lift-main = 79.333 ms
+Category: google
+	 dataset 'nature-books', measurement: JsonSmart-main = 19.383 ms
+Category: google
+	 dataset 'nature-books', measurement: spray-main = 1037.289 ms
+Category: google
+	 dataset 'nature-books', measurement: persist-main = 36.914 ms
+Category: google
+	 dataset 'nature-books', measurement: rojoma-main = 115.649 ms
+Category: google
+	 dataset 'nature-books', measurement: jackson-main = 117.303 ms
+Category: twitter
+	 dataset 'tweet', measurement: lift-main = 3.813 ms
+	 dataset '100tweets', measurement: lift-main = 479.378 ms
+Category: twitter
+	 dataset 'tweet', measurement: JsonSmart-main = 2.265 ms
+	 dataset '100tweets', measurement: JsonSmart-main = 296.853 ms
+Category: twitter
+	 dataset 'tweet', measurement: spray-main = 82.896 ms
+	 dataset '100tweets', measurement: spray-main = 9251.215 ms
+Category: twitter
+	 dataset 'tweet', measurement: persist-main = 5.288 ms
+	 dataset '100tweets', measurement: persist-main = 499.713 ms
+Category: twitter
+	 dataset 'tweet', measurement: rojoma-main = 11.194 ms
+	 dataset '100tweets', measurement: rojoma-main = 1211.92 ms
+Category: twitter
+	 dataset 'tweet', measurement: jackson-main = 2.795 ms
+	 dataset '100tweets', measurement: jackson-main = 315.851 ms
+
