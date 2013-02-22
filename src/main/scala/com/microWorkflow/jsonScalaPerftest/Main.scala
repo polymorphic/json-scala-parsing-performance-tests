@@ -5,39 +5,54 @@
  */
 package com.microWorkflow.jsonScalaPerftest
 
-import collection.immutable.HashMap
+import joptsimple._
+import scala.collection.JavaConversions._
+import collection.immutable.HashSet
 
 
 object Main {
-  val usage =
-    """
-      |Usage: com.microWorkflow.jsonScalaPerftest.Main [-n num] [-w num] [-map]
-      |Running with default values
-    """.stripMargin
 
   def main(args: Array[String]) {
-    if (args.isEmpty) println(usage)
+    val argParser = new OptionParser()
 
-    type SymbolTable = Map[Symbol, Any]
-    def nextOption(map: SymbolTable, list: List[String]): SymbolTable = {
-      list match {
-        case Nil => map
-        case "-n" :: value :: tail => nextOption(map + ('iterations -> value.toInt), tail)
-        case "-w" :: value :: tail => nextOption(map + ('warmUp -> value.toInt), tail)
-        case "-map" :: tail => nextOption(map + ('map -> true), tail)
-        case _ :: tail =>
-          println("Don't know what to do with '%s'%s".format(list.head, usage))
-          sys.exit(1)
-      }
+    val iterationsOpt = argParser
+      .accepts("iterations", "Number of iterations for measurements.")
+      .withRequiredArg()
+      .describedAs("iterations")
+      .ofType(classOf[Int])
+      .defaultsTo(100)
+    val warmUpOpt = argParser
+      .accepts("warmup", "Number of iterations for warm up.")
+      .withRequiredArg()
+      .describedAs("warmup")
+      .ofType(classOf[Int])
+      .defaultsTo(5)
+    val mapOpt = argParser.accepts("map", "Cover parsing and object mapping.")
+    val excludeOpt = argParser
+      .accepts("exclude", "Comma-separated list of library names to exclude from run, e.g., twitter,scalalib.")
+      .withRequiredArg()
+      .withValuesSeparatedBy(',')
+      .describedAs("exclude")
+      .ofType(classOf[String])
+
+    if (args.isEmpty) {
+      argParser.printHelpOn(System.err)
+      sys.exit(1)
     }
-    val options = nextOption(new HashMap[Symbol, Any](), args.toList)
+    val options = try {
+      argParser.parse(args: _*)
+    } catch { case e: OptionException => {
+      println("Exception parsing command-line arguments: %s".format(e.getMessage))
+      sys.exit(1)
+    }}
 
-    val iterations = options.getOrElse('iterations, 100).asInstanceOf[Int]
-    val doMap = options.getOrElse('map, false).asInstanceOf[Boolean]
-    val warmUpIterations = options.getOrElse('warmUp, 5).asInstanceOf[Int]
+    val iterations = options.valueOf[Int](iterationsOpt)
+    val doMap = options.has(mapOpt)
+    val warmUpIterations = options.valueOf[Int](warmUpOpt)
+    val exclude = if (options.has(excludeOpt)) options.valuesOf[String](excludeOpt).map(_.toLowerCase).toSet else HashSet[String]()
 
-    println("Runing %d iterations %s object mapping".format(iterations, if (doMap) "with" else "without"))
-    val experiment = Experiment(warmUpIterations)
+    println("Running %d iterations %s object mapping".format(iterations, if (doMap) "with" else "without"))
+    val experiment = Experiment(exclude, warmUpIterations)
     val ms = if (doMap) experiment.measureMapping(iterations) else experiment.measureParsing(iterations)
     for (m <- ms) {
       print("Category: %s\n".format(m._1))

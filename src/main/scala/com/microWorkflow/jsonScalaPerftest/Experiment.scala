@@ -6,19 +6,21 @@
 
 package com.microWorkflow.jsonScalaPerftest
 
-import collection.immutable.HashMap
+import collection.immutable.{Set, HashMap}
 
-case class Experiment(warmUpIterations: Int=5) {
+case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
 
   val allAdaptors = Array( new liftjson.LiftJsonAdaptor("lift")
     , new jsonsmart.JsonSmartAdaptor("JsonSmart")
     , new spray.SprayAdaptor("spray")
     , new persist.PersistAdaptor("persist")
     , new rojoma.RojomaAdaptor("rojoma")
-//    , new twitter.TwitterAdaptor("twitter")
-//    , new scalalib.ScalaLibAdaptor("scalalib")
+    , new twitter.TwitterAdaptor("twitter")
+    , new scalalib.ScalaLibAdaptor("scalalib")
     , new jackson.JacksonAdaptor("jackson")
     )
+
+  val adaptorsToTest = allAdaptors.filterNot(s => exclude.contains(s.getName))
 
   val categories = Category
     .getFilesMatching("data", f => f.isDirectory)
@@ -28,23 +30,23 @@ case class Experiment(warmUpIterations: Int=5) {
     def run(iterations: Int, libraryAdaptors: Seq[LibraryAdaptor]): Array[(String, HashMap[String, Measurement])] = {
 
       categories.flatMap(category => (libraryAdaptors.map {
-        adaptor => (category.name -> category.measure(adaptor, false, iterations, warmUpIterations))
+        adaptor => (category.name -> category.measure(adaptor, doMap = false, iterations, warmUpIterations))
       }))
     }
 
     println("Parsing measurement (%d warmup, %d iterations)...".format(warmUpIterations, iterations))
-    run(iterations, allAdaptors.toSeq)
+    run(iterations, adaptorsToTest.toSeq)
   }
 
   def measureMapping(iterations: Int): Array[(String, HashMap[String, Measurement])] = {
     def run(iterations: Int, libraryAdaptors: Seq[LibraryAdaptor]): Array[(String, HashMap[String, Measurement])] = {
 
       categories.flatMap(category => (libraryAdaptors.map {
-        adaptor => (category.name -> category.measure(adaptor, true, iterations, warmUpIterations))
+        adaptor => (category.name -> category.measure(adaptor, doMap = true, iterations, warmUpIterations))
       }))
     }
 
-    val targetAdaptors = allAdaptors.filter(_.hasMap)
+    val targetAdaptors = adaptorsToTest.filter(_.hasMap)
     println("Mapping measurement (%d warmup, %d iterations)...".format(warmUpIterations, iterations))
     run(iterations, targetAdaptors)
   }
