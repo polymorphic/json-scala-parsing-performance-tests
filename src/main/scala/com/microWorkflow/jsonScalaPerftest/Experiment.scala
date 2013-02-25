@@ -10,17 +10,7 @@ import collection.immutable.{Set, HashMap}
 
 case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
 
-  val allAdaptors = Array( new liftjson.LiftJsonAdaptor("lift")
-    , new jsonsmart.JsonSmartAdaptor("JsonSmart")
-    , new spray.SprayAdaptor("spray")
-    , new persist.PersistAdaptor("persist")
-    , new rojoma.RojomaAdaptor("rojoma")
-    , new twitter.TwitterAdaptor("twitter")
-    , new scalalib.ScalaLibAdaptor("scalalib")
-    , new jackson.JacksonAdaptor("jackson")
-    )
-
-  val adaptorsToTest = allAdaptors.filterNot(s => exclude.contains(s.getName))
+  val adaptorsToTest = Experiment.allAdaptors.filterNot(s => exclude.contains(s.getName))
 
   val categories = Category
     .getFilesMatching("data", f => f.isDirectory)
@@ -51,4 +41,17 @@ case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
     run(iterations, targetAdaptors)
   }
 
+}
+
+object Experiment {
+
+  val allAdaptors = Array( new liftjson.LiftJsonAdaptor("lift")
+    , new jsonsmart.JsonSmartAdaptor("JsonSmart")
+    , new spray.SprayAdaptor("spray")
+    , new persist.PersistAdaptor("persist")
+    , new rojoma.RojomaAdaptor("rojoma")
+    , new twitter.TwitterAdaptor("twitter")
+    , new scalalib.ScalaLibAdaptor("scalalib")
+    , new jackson.JacksonAdaptor("jackson")
+  )
 }

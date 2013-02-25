@@ -14,7 +14,7 @@ object Main {
 
   def main(args: Array[String]) {
     val argParser = new OptionParser()
-
+    val listOpt = argParser.accepts("list", "List known JSON libraries.")
     val iterationsOpt = argParser
       .accepts("iterations", "Number of iterations for measurements.")
       .withRequiredArg()
@@ -45,6 +45,13 @@ object Main {
       println("Exception parsing command-line arguments: %s".format(e.getMessage))
       sys.exit(1)
     }}
+    if (options.has(listOpt)) {
+      println("Known JSON libraries:")
+      Experiment.allAdaptors.foreach(a => println("%s, object mapping %s implemented".format(
+        a.getName,
+        if (a.hasMap) "IS" else "IS NOT")))
+      sys.exit()
+    }
 
     val iterations = options.valueOf[Int](iterationsOpt)
     val doMap = options.has(mapOpt)
