@@ -53,5 +53,6 @@ object Experiment {
     , new twitter.TwitterAdaptor("twitter")
     , new scalalib.ScalaLibAdaptor("scalalib")
     , new jackson.JacksonAdaptor("jackson")
+    , new play.PlayAdaptor("play")
   )
 }
