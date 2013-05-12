@@ -52,7 +52,7 @@ libraryDependencies ++= Seq (
     "com.yammer.metrics" % "metrics-core" % "2.1.3",
     "fr.janalyse" %% "janalyse-jmx" % "0.6.1" % "compile",
     "net.sf.jopt-simple" % "jopt-simple" % "4.4",
-     "play" % "play-json_2.10" % "2.2-SNAPSHOT"
+    "play" % "play-json_2.10" % "2.2-SNAPSHOT"
 )
 
 /* you may need these repos */
@@ -61,7 +61,8 @@ resolvers ++= Seq(
   "spray" at "http://repo.spray.io/",
   "coda" at "http://repo.codahale.com/",
   "JAnalyse Repository" at "http://www.janalyse.fr/repository/",
-  Resolver.file("Local Repository", file("/Users/dragos.manolescu/Repos/Play20/repository/local"))(Resolver.ivyStylePatterns) // really? https://github.com/playframework/Play20/wiki/BuildingFromSource
+  "Mandubian repository snapshots" at "https://github.com/mandubian/mandubian-mvn/raw/master/snapshots/",
+  "Mandubian repository releases" at "https://github.com/mandubian/mandubian-mvn/raw/master/releases/"
 )
 
 /* sbt behavior */

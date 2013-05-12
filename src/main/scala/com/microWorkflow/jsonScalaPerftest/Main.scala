@@ -20,13 +20,13 @@ object Main {
       .withRequiredArg()
       .describedAs("iterations")
       .ofType(classOf[Int])
-      .defaultsTo(100)
+      .defaultsTo(200)
     val warmUpOpt = argParser
       .accepts("warmup", "Number of iterations for warm up.")
       .withRequiredArg()
       .describedAs("warmup")
       .ofType(classOf[Int])
-      .defaultsTo(5)
+      .defaultsTo(25)
     val mapOpt = argParser.accepts("map", "Cover parsing and object mapping.")
     val excludeOpt = argParser
       .accepts("exclude", "Comma-separated list of library names to exclude from run, e.g., twitter,scalalib.")
@@ -35,10 +35,6 @@ object Main {
       .describedAs("exclude")
       .ofType(classOf[String])
 
-    if (args.isEmpty) {
-      argParser.printHelpOn(System.err)
-      sys.exit(1)
-    }
     val options = try {
       argParser.parse(args: _*)
     } catch { case e: OptionException => {
