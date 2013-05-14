@@ -26,7 +26,7 @@ scmInfo := Some(
 // organizationName := "My Company"
 
 /* scala versions and options */
-scalaVersion := "2.10.0"
+scalaVersion := "2.10.1"
 
 // crossScalaVersions := Seq("2.9.1")
 
@@ -43,13 +43,15 @@ mainClass in (Compile, run) := Some("com.microWorkflow.jsonScalaPerftest.Main")
 
 /* dependencies */
 libraryDependencies ++= Seq (
-    "com.persist" % "persist-json_2.10" % "0.9",
-    "com.codahale" % "jerkson_2.9.1" % "0.5.0",
-    "net.liftweb" % "lift-json_2.10" % "2.5-M4",
+    "com.persist" %% "persist-json" % "0.13",
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.2.1",
+    "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.1",
+    "com.fasterxml.jackson.module" % "jackson-module-scala_2.9.2" % "2.2.0",
+    "net.liftweb" %% "lift-json" % "2.5-M4",
     "net.minidev" % "json-smart" % "1.1.1",
     "com.rojoma" %% "rojoma-json" % "2.2.0",
-    "io.spray" %% "spray-json" % "1.2.3",
-    "com.yammer.metrics" % "metrics-core" % "2.1.3",
+    "io.spray" %%  "spray-json" % "1.2.3",
+    "nl.grons" %% "metrics-scala" % "2.2.0",
     "fr.janalyse" %% "janalyse-jmx" % "0.6.1" % "compile",
     "net.sf.jopt-simple" % "jopt-simple" % "4.4",
     "play" % "play-json_2.10" % "2.2-SNAPSHOT"
