@@ -58,7 +58,7 @@ class RojomaAdaptor(name:String) extends LibraryAdaptor(name) {
 
   def initialize() {}
   
-  def mapOnce(json: String) = {
+  def mapTweet(json: String) = {
       JsonUtil.parseJson[Tweet](json).get
   }
 

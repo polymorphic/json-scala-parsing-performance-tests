@@ -11,7 +11,7 @@ class TwitterAdaptor(name:String) extends LibraryAdaptor(name) {
       parse(json)
   }
 
-  override def mapOnce(json: String) = null
+  override def mapTweet(json: String) = null
 
   override def hasMap = false
 

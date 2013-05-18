@@ -46,7 +46,7 @@ libraryDependencies ++= Seq (
     "com.persist" %% "persist-json" % "0.13",
     "com.fasterxml.jackson.core" % "jackson-core" % "2.2.1",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.1",
-    "com.fasterxml.jackson.module" % "jackson-module-scala_2.9.2" % "2.2.0",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.0",
     "net.liftweb" %% "lift-json" % "2.5-M4",
     "net.minidev" % "json-smart" % "1.1.1",
     "com.rojoma" %% "rojoma-json" % "2.2.0",
@@ -81,7 +81,7 @@ publishTo <<= version { (v: String) =>
     "snapshots" at nexus + "content/repositories/snapshots"
   )
   else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-                      }
+  }
 
 publishArtifact in Test := false
 

@@ -22,14 +22,21 @@ abstract class LibraryAdaptor(name: String) extends TimeMeasurements {
 
   def parseOnce(json: String): Any
 
-  def mapOnce(json: String): Any
+  def mapTweet(json: String): Any
+
+  def mapPlace(json: String) = { /* nop */ }
 
   def measure(dataset: Dataset, doMap:Boolean, iterations: Int) {
     initialize()
 
     val context2 = mainTimer.time()
 
-    val f: String => Any = if (doMap) mapOnce else parseOnce
+    val mapper: String => Any = dataset.name match {
+      case "100tweets" => mapTweet
+      case _ => mapPlace
+    }
+
+    val f: String => Any = if (doMap) mapper else parseOnce
 
     try {
       for (count <- 1 to iterations) {
