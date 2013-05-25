@@ -7,7 +7,8 @@ package com.microWorkflow.jsonScalaPerftest
 
 import joptsimple._
 import scala.collection.JavaConversions._
-import collection.immutable.HashSet
+import scala.collection.immutable.HashSet
+import com.microWorkflow.jsonScalaPerftest.output.{ConsoleReporter, ChartReporter}
 
 
 object Main {
@@ -34,6 +35,12 @@ object Main {
       .withValuesSeparatedBy(',')
       .describedAs("exclude")
       .ofType(classOf[String])
+    val reportOpt = argParser
+      .accepts("report", "Result generation, c=console, b=bar chart.")
+      .withRequiredArg()
+      .describedAs("Character; default is 'c'")
+      .ofType(classOf[String])
+      .defaultsTo("c")
 
     val options = try {
       argParser.parse(args: _*)
@@ -57,12 +64,15 @@ object Main {
     println("Running %d iterations %s object mapping".format(iterations, if (doMap) "with" else "without"))
     val experiment = Experiment(exclude, warmUpIterations)
     val ms = if (doMap) experiment.measureMapping(iterations) else experiment.measureParsing(iterations)
-    for (m <- ms) {
-      print("Category: %s\n".format(m._1))
-      for (d <- m._2.iterator)
-      print("\t dataset '%s', measurement: %s\n".format(d._1, d._2))
-    }
 
+    if (options.has(reportOpt) && options.valueOf[String](reportOpt) == "b") {
+      val chart = new ChartReporter(if (doMap) "JSON Parsing and Mapping" else "JSON Parsing", ms)
+      chart.view
+      System.in.read()
+    } else {
+      val reporter = new ConsoleReporter(ms)
+      reporter.printResults()
+    }
     sys.exit()
   }
 }

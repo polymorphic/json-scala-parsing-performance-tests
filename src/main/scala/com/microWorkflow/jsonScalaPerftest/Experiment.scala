@@ -24,7 +24,7 @@ case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
       }))
     }
 
-    println("Parsing measurement (%d warmup, %d iterations)...".format(warmUpIterations, iterations))
+    println("Parsing measurement (%d warmup, %d iterations on %s)...".format(warmUpIterations, iterations, adaptorsToTest.map(_.getName).mkString(", ")))
     run(iterations, adaptorsToTest.toSeq)
   }
 
@@ -37,7 +37,7 @@ case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
     }
 
     val targetAdaptors = adaptorsToTest.filter(_.hasMap)
-    println("Mapping measurement (%d warmup, %d iterations)...".format(warmUpIterations, iterations))
+    println("Mapping measurement (%d warmup, %d iterations on %s)...".format(warmUpIterations, iterations, adaptorsToTest.map(_.getName).mkString(", ")))
     run(iterations, targetAdaptors)
   }
 

@@ -54,7 +54,8 @@ libraryDependencies ++= Seq (
     "nl.grons" %% "metrics-scala" % "2.2.0",
     "fr.janalyse" %% "janalyse-jmx" % "0.6.1" % "compile",
     "net.sf.jopt-simple" % "jopt-simple" % "4.4",
-    "play" % "play-json_2.10" % "2.2-SNAPSHOT"
+    "play" % "play-json_2.10" % "2.2-SNAPSHOT",
+     "org.jfree" % "jfreechart" % "1.0.14"
 )
 
 /* you may need these repos */
