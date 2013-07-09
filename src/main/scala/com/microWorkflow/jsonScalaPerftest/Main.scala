@@ -39,6 +39,12 @@ object Main extends App {
       .describedAs("Character; default is 'c'")
       .ofType(classOf[String])
       .defaultsTo("c")
+    val chartTitleOpt = argParser
+      .accepts("title", "Chart title.")
+      .withRequiredArg()
+      .describedAs("title")
+      .ofType(classOf[String])
+      .defaultsTo("JSON Data set")
 
     val options = try {
       argParser.parse(args: _*)
@@ -64,7 +70,10 @@ object Main extends App {
     val ms = if (doMap) experiment.measureMapping(iterations) else experiment.measureParsing(iterations)
 
     if (options.has(reportOpt) && options.valueOf[String](reportOpt) == "b") {
-      val chart = new ChartReporter(if (doMap) "JSON Parsing and Mapping" else "JSON Parsing", ms)
+      val chart = new ChartReporter(options.valueOf(chartTitleOpt) +
+        (if (doMap) " (parsing & mapping)" else " (parsing)")
+        , ms
+        )
       chart.view
       System.in.read()
     } else {

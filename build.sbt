@@ -50,7 +50,7 @@ libraryDependencies ++= Seq (
     "net.liftweb" %% "lift-json" % "2.5-M4",
     "net.minidev" % "json-smart" % "1.1.1",
     "com.rojoma" %% "rojoma-json" % "2.2.0",
-    "io.spray" %%  "spray-json" % "1.2.3",
+    "io.spray" %%  "spray-json" % "1.2.5",
     "nl.grons" %% "metrics-scala" % "2.2.0",
     "fr.janalyse" %% "janalyse-jmx" % "0.6.1" % "compile",
     "net.sf.jopt-simple" % "jopt-simple" % "4.4",
