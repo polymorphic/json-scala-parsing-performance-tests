@@ -44,10 +44,10 @@ mainClass in (Compile, run) := Some("com.microWorkflow.jsonScalaPerftest.Main")
 /* dependencies */
 libraryDependencies ++= Seq (
     "com.persist" %% "persist-json" % "0.13",
-    "com.fasterxml.jackson.core" % "jackson-core" % "2.2.1",
-    "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.1",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.0",
-    "net.liftweb" %% "lift-json" % "2.5-M4",
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.2.2",
+    "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.2",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.2.2",
+    "net.liftweb" %% "lift-json" % "2.5.1",
     "net.minidev" % "json-smart" % "1.1.1",
     "com.rojoma" %% "rojoma-json" % "2.2.0",
     "io.spray" %%  "spray-json" % "1.2.5",
@@ -55,7 +55,7 @@ libraryDependencies ++= Seq (
     "fr.janalyse" %% "janalyse-jmx" % "0.6.1" % "compile",
     "net.sf.jopt-simple" % "jopt-simple" % "4.4",
     "play" % "play-json_2.10" % "2.2-SNAPSHOT",
-     "org.jfree" % "jfreechart" % "1.0.14"
+    "org.jfree" % "jfreechart" % "1.0.14"
 )
 
 /* you may need these repos */
