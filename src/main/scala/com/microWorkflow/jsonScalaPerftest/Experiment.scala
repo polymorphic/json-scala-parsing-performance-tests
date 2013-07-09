@@ -10,7 +10,7 @@ import collection.immutable.{Set, HashMap}
 
 case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
 
-  val adaptorsToTest = Experiment.allAdaptors.filterNot(s => exclude.contains(s.getName))
+  val adaptorsToTest = Experiment.allAdaptors.filterNot(s => exclude.contains(s.getName.toLowerCase))
 
   val categories = Category
     .getFilesMatching("data", f => f.isDirectory)
@@ -19,9 +19,9 @@ case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
   def measureParsing(iterations: Int): Array[(String, HashMap[String, Measurement])] = {
     def run(iterations: Int, libraryAdaptors: Seq[LibraryAdaptor]): Array[(String, HashMap[String, Measurement])] = {
 
-      categories.flatMap(category => (libraryAdaptors.map {
-        adaptor => (category.name -> category.measure(adaptor, doMap = false, iterations, warmUpIterations))
-      }))
+      categories.flatMap(category => libraryAdaptors.map {
+        adaptor => category.name -> category.measure(adaptor, doMap = false, iterations, warmUpIterations)
+      })
     }
 
     println("Parsing measurement (%d warmup, %d iterations on %s)...".format(warmUpIterations, iterations, adaptorsToTest.map(_.getName).mkString(", ")))
@@ -31,9 +31,9 @@ case class Experiment(exclude: Set[String], warmUpIterations: Int=5) {
   def measureMapping(iterations: Int): Array[(String, HashMap[String, Measurement])] = {
     def run(iterations: Int, libraryAdaptors: Seq[LibraryAdaptor]): Array[(String, HashMap[String, Measurement])] = {
 
-      categories.flatMap(category => (libraryAdaptors.map {
-        adaptor => (category.name -> category.measure(adaptor, doMap = true, iterations, warmUpIterations))
-      }))
+      categories.flatMap(category => libraryAdaptors.map {
+        adaptor => category.name -> category.measure(adaptor, doMap = true, iterations, warmUpIterations)
+      })
     }
 
     val targetAdaptors = adaptorsToTest.filter(_.hasMap)

@@ -11,9 +11,7 @@ import scala.collection.immutable.HashSet
 import com.microWorkflow.jsonScalaPerftest.output.{ConsoleReporter, ChartReporter}
 
 
-object Main {
-
-  def main(args: Array[String]) {
+object Main extends App {
     val argParser = new OptionParser()
     val listOpt = argParser.accepts("list", "List known JSON libraries.")
     val iterationsOpt = argParser
@@ -74,5 +72,4 @@ object Main {
       reporter.printResults()
     }
     sys.exit()
-  }
 }
